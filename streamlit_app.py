@@ -10,9 +10,10 @@ st.title("🩺 Healthcare RAG Chatbot")
 @st.cache_resource
 def load_db():
     docs = []
-    docs.extend(TextLoader("data/healthcare_policy.txt").load())
-    docs.extend(TextLoader("data/healthcare_guidelines.txt").load())
-    docs.extend(CSVLoader("data/healthcare_protocols.csv").load())
+    docs.extend(TextLoader("healthcare_policy.txt").load())
+    docs.extend(TextLoader("healthcare_guidelines.txt").load())
+    docs.extend(CSVLoader("healthcare_protocols.csv").load())
+
 
     splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
     chunks = splitter.split_documents(docs)
@@ -58,3 +59,4 @@ if question:
 
     st.write("### 🧠 Answer:")
     st.write(answer)
+
