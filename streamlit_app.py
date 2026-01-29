@@ -25,29 +25,22 @@ def load_db():
 db = load_db()
 retriever = db.as_retriever(search_kwargs={"k": 3})
 
-pipe = pipeline("text-generation", model="t5-small")
+pipe = pipeline("text2text-generation", model="t5-small")
 
 
 def ask_ai(context, question):
     prompt = f"""
-You are a healthcare expert assistant.
-
-1. Explain the topic in exactly 2 short lines.
-2. Then give exactly 4 bullet points about what a person can do (treatment, prevention, lifestyle like yoga, diet, doctor visit).
-3. Use ONLY the provided context. Do not add external knowledge.
-4. If the answer is not found in the context, reply exactly:
-"Information not found in documents."
-
 Context:
 {context}
 
-Question:
-{question}
+Question: {question}
 
-Answer:
+Answer in 2 short lines and 4 bullet points. 
+If not found, say: Information not found in documents.
 """
-    result = pipe(prompt, max_new_tokens=200)[0]["generated_text"]
+    result = pipe(prompt, max_new_tokens=150)[0]["generated_text"]
     return result
+
 
 # ✅ INPUT BOX
 question = st.text_input("Ask healthcare question:")
@@ -60,5 +53,6 @@ if question:
 
     st.write("### 🧠 Answer:")
     st.write(answer)
+
 
 
