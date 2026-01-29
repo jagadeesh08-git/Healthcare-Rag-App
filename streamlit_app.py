@@ -18,7 +18,7 @@ def load_db():
     splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
     chunks = splitter.split_documents(docs)
 
-    embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+    embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L3-v2")
     db = Chroma.from_documents(chunks, embeddings, persist_directory="db")
     return db
 
@@ -53,6 +53,7 @@ if question:
 
     st.write("### 🧠 Answer:")
     st.write(answer)
+
 
 
 
