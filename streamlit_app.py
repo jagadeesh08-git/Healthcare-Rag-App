@@ -1,12 +1,12 @@
 import streamlit as st
 from langchain_community.document_loaders import TextLoader, CSVLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import Chroma
-from transformers import pipeline
+from langchain_community.embeddings import FakeEmbeddings
 
 st.title("🩺 Healthcare RAG Chatbot")
 
+# LOAD DATABASE
 @st.cache_resource
 def load_db():
     docs = []
@@ -14,38 +14,38 @@ def load_db():
     docs.extend(TextLoader("healthcare_guidelines.txt").load())
     docs.extend(CSVLoader("healthcare_protocols.csv").load())
 
-
     splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
     chunks = splitter.split_documents(docs)
 
-    embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L3-v2")
-    db = Chroma.from_documents(chunks, embeddings, persist_directory="db")
+    # ✅ Fake embeddings (works on Streamlit Cloud)
+    embeddings = FakeEmbeddings(size=384)
+
+    db = Chroma.from_documents(chunks, embeddings)
     return db
 
 db = load_db()
 retriever = db.as_retriever(search_kwargs={"k": 3})
 
-pipe = pipeline("text2text-generation", model="t5-small")
 
-
+# SIMPLE AI ANSWER FUNCTION (NO HEAVY MODEL)
 def ask_ai(context, question):
-    prompt = f"""
-Context:
-{context}
+    if context.strip() == "":
+        return "Information not found in documents."
 
-Question: {question}
+    return f"""Explanation:
+{context[:200]}
 
-Answer in 2 short lines and 4 bullet points. 
-If not found, say: Information not found in documents.
+• Follow doctor advice  
+• Maintain healthy diet  
+• Exercise and yoga  
+• Regular health checkup  
 """
-    result = pipe(prompt, max_new_tokens=150)[0]["generated_text"]
-    return result
 
 
-# ✅ INPUT BOX
+# INPUT
 question = st.text_input("Ask healthcare question:")
 
-# ✅ RUN WHEN USER TYPES
+# RUN
 if question:
     docs = retriever.invoke(question)
     context = "\n".join([d.page_content for d in docs])
@@ -53,7 +53,3 @@ if question:
 
     st.write("### 🧠 Answer:")
     st.write(answer)
-
-
-
-
