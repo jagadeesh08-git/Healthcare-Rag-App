@@ -30,7 +30,8 @@ It is designed to assist students, researchers, and healthcare professionals in 
 ---
 
 ## 📸 Screenshots
-(Add screenshots of your app interface here)
+<img width="1843" height="793" alt="image" src="https://github.com/user-attachments/assets/72adf37c-bc05-48ce-8c31-5d192bdfb0ae" />
+
 
 ---
 
