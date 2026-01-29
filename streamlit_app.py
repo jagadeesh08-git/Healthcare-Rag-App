@@ -25,7 +25,8 @@ def load_db():
 db = load_db()
 retriever = db.as_retriever(search_kwargs={"k": 3})
 
-pipe = pipeline("text2text-generation", model="google/flan-t5-base")
+pipe = pipeline("text-generation", model="t5-small")
+
 
 def ask_ai(context, question):
     prompt = f"""
@@ -59,4 +60,5 @@ if question:
 
     st.write("### 🧠 Answer:")
     st.write(answer)
+
 
