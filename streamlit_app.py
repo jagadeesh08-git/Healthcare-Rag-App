@@ -24,7 +24,7 @@ def load_db():
     return db
 
 db = load_db()
-retriever = db.as_retriever(search_kwargs={"k": 3})
+retriever = db.as_retriever(search_kwargs={"k": 1})
 
 
 # SIMPLE AI ANSWER FUNCTION (NO HEAVY MODEL)
@@ -32,14 +32,19 @@ def ask_ai(context, question):
     if context.strip() == "":
         return "Information not found in documents."
 
-    return f"""Explanation:
-{context[:200]}
+    explanation = context.split(".")[:3]  # take first 3 sentences
+    explanation_text = ". ".join(explanation)
 
-• Follow doctor advice  
-• Maintain healthy diet  
-• Exercise and yoga  
-• Regular health checkup  
+    return f"""
+**Explanation:**  
+{explanation_text}
+
+• Take doctor prescribed medicine  
+• Drink plenty of water and rest  
+• Eat healthy food and do yoga  
+• Visit a doctor if symptoms continue  
 """
+
 
 
 # INPUT
@@ -52,4 +57,6 @@ if question:
     answer = ask_ai(context, question)
 
     st.write("### 🧠 Answer:")
-    st.write(answer)
+    st.markdown(answer)
+
+
