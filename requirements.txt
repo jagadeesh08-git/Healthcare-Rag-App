@@ -3,9 +3,10 @@ langchain
 langchain-community
 langchain-text-splitters
 chromadb
-transformers
 sentence-transformers
-huggingface-hub
 pandas
 numpy
 torch
+transformers==4.38.2
+
+
